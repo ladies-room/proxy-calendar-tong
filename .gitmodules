@@ -1,0 +1,3 @@
+[submodule "MorePlace"]
+	path = MorePlace
+	url = https://github.com/ladies-room/more-places-service.git
