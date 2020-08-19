@@ -1,0 +1,9 @@
+[submodule "MorePlace"]
+	path = MorePlace
+	url = https://github.com/ladies-room/more-places-service.git
+[submodule "Gallery"]
+	path = Gallery
+	url = https://github.com/ladies-room/propertygallery-service.git
+[submodule "Header"]
+	path = Header
+	url = https://github.com/ladies-room/propertygallery-service.git
