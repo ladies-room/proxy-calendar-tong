@@ -19,7 +19,7 @@ app.all('/property/*', (req, res) => {
   }).catch((err) => console.log(err));
 })
 
-// port 2046 (tong calendar)
+// port 2046 (tong calendars)
 app.get("/listing", (req, res) => {
   var getListingAddress = 'http://localhost:2046/listing'
   axios.get(`${getListingAddress}/`)
