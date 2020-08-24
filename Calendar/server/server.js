@@ -17,11 +17,10 @@ app.get('/listing', (req, res) => {
       res.status(200).send(data);
     }
   })
-  // res.send({
-  //   'hack': 'reactor'
-  // })
 })
 
 app.listen(PORT, () => {
   console.log(`port is running on ${PORT}`)
 })
+
+// test origin

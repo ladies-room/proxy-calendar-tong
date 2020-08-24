@@ -1,60 +1,106 @@
 import React from 'react';
+import moment from 'moment';
 import styled from 'styled-components';
 
-const DayRow = styled.span`
-// display: flex;
-// justify-content: stretch;
-// background-color: pink;
-// margin: 10px;
-// -webkit-box-pack: center;
-// -webkit-box-align: center;
-// align-items: center;
-// -webkit-box-flex: 1;
-// flex: 1;
-height: 35px;
-cursor: pointer;
-transition: all 0.2s;
+const DayTd = styled.td`
+height: 44px;
+width: 44px;
+text-align: center !important;
+background: rgb(255, 255, 255);
+border: 0px;
+padding: 0px;
+box-sizing: border-box !important;
+text-align: center !important;
+`
+const InlineSpan = styled.span`
+height: 44px;
+width: 44px;
+margin: 1px 0px !important;
+text-align: center !important;
+width: 44px;
+height: 43px;
+background: rgb(255, 255, 255);
+padding: 5px;
+border-top-right-radius: 50%;
+border-bottom-right-radius: 50%;
+border-top-left-radius: 50%;
+border-bottom-left-radius: 50%;
+box-sizing: border-box !important;
+text-align: center !important;
+&:hover {
+  background-color: lightgray
+}
 `
 class Day extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      dateRange: []
+      isBooked: false
     }
-    this.selectDateRange = this.selectDateRange.bind(this);
+    this.pushDates = this.pushDates.bind(this);
+    this.setIsBookedState = this.setIsBookedState.bind(this);
+    this.addHoverEffect = this.addHoverEffect.bind(this);
+    this.removeHoverEffect = this.removeHoverEffect.bind(this);
   }
-
-  selectDateRange(val) {
-    var selectedValue = val
-    console.log(selectedValue)
-    var obj = selectedValue
-    var selectedValueStr = selectedValue.date._d;
-    console.log(obj.date)
-    // console.log(selectedValueStr)
-    this.props.addDateToDatePicker(selectedValueStr);
+  pushDates(e) {
+    // call this.props.selectDates(e.date)
+    event.preventDefault();
+    this.props.selectDates(e.date._d)
   }
+  addHoverEffect(e) {
+    e.target.style.background = 'red'
+  }
+  removeHoverEffect(e) {
+    // e.target.style.background =
+  }
+  setIsBookedState() {
+    var today = moment(this.props.day.date._d).format('YYYY-MM-DD');
 
-  render() {
-    return (
-      <DayRow>
-        <span
+    for (var i = 0; i < this.props.booked_dates.length; i++) {
+      var checkin = moment(this.props.booked_dates[i].check_in)._i;
+      var checkout = moment(this.props.booked_dates[i].check_out)._i;
+      var booked = moment(today).isBetween(checkin, checkout) // true false
+
+      if (booked === true) {
+        return <InlineSpan
+          style={{
+            'color': 'lightgray',
+            'textDecoration': 'line-through',
+            'cursor': 'default'
+          }}
           key={this.props.day.date.toString()}
-          className={"day" + (this.props.day.isToday ? " today" : "") + (this.props.day.isCurrentMonth ? "" : " different-month") + (this.props.day.date.isSame(this.props.selected) ? " selected" : "")}
-          // onClick={() => select(this.day)}
-          // onClick={() => this.selectDateRange(this.props.day)}
-          onClick={() => this.selectDateRange(this.props.day)}
-        >{this.props.day.number}</span>
-      </DayRow>
+        >
+          {this.props.day.number}
+        </InlineSpan>
+      }
+    }
+    // if (this.props.day.isCurrentFirstMonth || this.props.day.isCurrentSecondMonth) {
+    return <InlineSpan
+      style={{
+        'cursor': 'pointer'
+      }}
+      key={this.props.day.date.toString()}
+      onClick={() => this.pushDates(this.props.day)}
+    >
+      {this.props.day.number}
+    </InlineSpan>
+    // }
+  }
+  componentDidMount() {
+    this.setIsBookedState();
+  }
+  render() {
+    const { day, day: { date, isCurrentMonth, isToday, number }, selectDates
+    } = this.props;
+
+    // if today's month is not in currentMonth, do not show date;
+    // if(!this.state.currentMonth.includes(day.date._d.month())) { }
+    return (
+      <DayTd>
+        {this.setIsBookedState()}
+      </DayTd>
     );
   }
 }
 
-
-
 export default Day;
-
-
-
-// onClick={() => select(day)}
-// onClick={() => select(this.day)}
-// onClick={(e) => this.selectDateRange(e, this.props.day)}

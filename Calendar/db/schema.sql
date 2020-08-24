@@ -40,10 +40,11 @@ CREATE TABLE Listings (
 CREATE TABLE Reservations (
   id INT NOT NULL AUTO_INCREMENT,
   listing_id INT NOT NULL,
-  booked_date DATE NOT NULL,
+  check_in DATE NOT NULL,
+  check_out DATE NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (listing_id) REFERENCES listings(id)
+  FOREIGN KEY (listing_id) REFERENCES Listings(id)
 );
 
 -- INSERT INTO listings (nightly_fee) VALUES (100), (200);
--- INSERT INTO Reservation (listing_id, booked_date) VALUES(1, '2020-08-11');
+-- INSERT INTO Reservation (listing_id, check_in, check_out) VALUES(1, '2020-08-11');

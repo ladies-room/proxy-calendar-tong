@@ -7,12 +7,19 @@ const PORT = 3000;
 
 app.use(express.static(path.join(__dirname, '../client/dist')));
 
-// port 3003 (susan header)
-app.get('/header', (req, res) => {
-  // waiting for susan's endpoints to finish
+// port 3003 (susan gallery)
+app.all('/property/*', (req, res) => {
+  axios({
+    method: req.method,
+    url: "http://localhost:3003" + req.originalUrl,
+    headers: req.params.id,
+    data: req.data
+  }).then((response) => {
+    res.send(response.data);
+  }).catch((err) => console.log(err));
 })
 
-// port 2046 (tong calendar)
+// port 2046 (tong calendars)
 app.get("/listing", (req, res) => {
   var getListingAddress = 'http://localhost:2046/listing'
   axios.get(`${getListingAddress}/`)
