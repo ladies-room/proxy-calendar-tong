@@ -1,183 +1,187 @@
 import React from 'react';
 import Week from './Week';
 import DayNames from './DayNames';
-import DatePicker from './DatePicker.jsx'
-
 import moment from 'moment';
+// const dayjs = require('dayjs')
+// const moment = require('moment');
+// import 'moment-timezone';
 import styled from 'styled-components';
+const axios = require('axios')
 
-const ModalCalendarDiv = styled.div`
-width: 100%;
-padding-left: 100px;
+const CalendarMainDiv = styled.div`
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+    overflow: visible !important;
+    display: flex !important;
+    height: 100% !important;
+    position: relative !important;
+    width: 717px;
+    text-align: left !important;
+    background: rgb(255, 255, 255) !important;
 `
-
-const ModalHeaderDiv = styled.div`
-  display:flex;
-`
-const HeaderLeftDiv = styled.div`
-justify-content: space-between;
-margin-right: 200px;
-`
-const HeaderRightDiv = styled.div`
-  justify-content: space-between;
-`
-const SectionDiv = styled.div`
-display:flex;
-`
-const SectionLeft = styled.div`
-justify-content: space-between;
-margin-right: 50px;
-`
-const SectionRight = styled.div`
-justify-content: space-between;
+const FirstMonthMainDiv = styled.div`
+  padding-right:20px;
 `
 
-export default class Calendar extends React.Component {
+const SecondMonthMaindiv = styled.div`
+padding-left:20px;
+`
+
+const WeeksTbody = styled.tbody`
+display: table-row-group;
+vertical-align: middle;
+border-color: inherit;
+`
+
+const ButtonLeft = styled.button`
+appearance: none !important;
+    display: inline-block !important;
+    color: rgb(34, 34, 34) !important;
+    cursor: pointer !important;
+    touch-action: manipulation !important;
+    position: relative !important;
+    border-radius: 50% !important;
+    border-width: initial !important;
+    // border-style: none !important;
+    // border-color: initial !important;
+    // border-image: initial !important;
+    outline: 0px !important;
+    margin: 0px !important;
+    padding: 0px !important;
+    // background: transparent !important;
+    // transition: -ms-transform 0.25s ease 0s, -webkit-transform 0.25s ease 0s, transform 0.25s ease 0s !important;
+`
+class Calendar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      month: moment(),
-      selected: moment().startOf('day'),
-      dateRange: []
-    };
-
-    this.previous = this.previous.bind(this);
-    this.next = this.next.bind(this);
-    this.addDateToDatePicker = this.addDateToDatePicker.bind(this);
+      firstMonth: moment(),
+      secondMonth: moment().add(1, 'month'),
+      booked_dates: []
+    }
+    this.getWeeks = this.getWeeks.bind(this)
+    this.getSecondWeeks = this.getSecondWeeks.bind(this)
+    this.getAvailability = this.getAvailability.bind(this);
+    this.firstMonthLabel = this.firstMonthLabel.bind(this);
+    this.secondMonthLabel = this.secondMonthLabel.bind(this);
   }
-
-  addDateToDatePicker(dateRanges) {
-    console.log(dateRanges);
-    // var newState = this.state.dateRange.push(dateRange);
-    // this.setState({
-    // dateRange: [...this.state.dateRange, dateRanges]
-    // })
-    // console.log(this.state.dateRange)
+  // DEPRECATED:
+  firstMonthLabel() {
+    var firstMonth = this.state.firstMonth
+    return <h3>{firstMonth.format("MMMM YYYY")}</h3>
   }
-
-  previous() {
-    const {
-      month,
-    } = this.state;
-
-    this.setState({
-      month: month.subtract(1, 'month'),
-    });
+  secondMonthLabel() {
+    var secondMonth = this.state.secondMonth
+    return <h3>{secondMonth.format("MMMM YYYY")}</h3>
   }
+  getWeeks() {
+    // difference between getWeeks & getSecondWeeks is the month;
+    // this.props.firstMonth
+    let firstSunday = this.state.firstMonth.clone().startOf("month").add("w" - 1).day("Sunday");
+    var weeks = [];
+    var done = false;
+    var count = 0;
+    var monthIndex = firstSunday.month();
 
-  next() {
-    const {
-      month,
-    } = this.state;
-
-    this.setState({
-      month: month.add(1, 'month'),
-    });
-  }
-
-  select(day) {
-    this.setState({
-      selected: day.date,
-      month: day.date.clone(),
-    });
-  }
-
-  renderWeeks() {
-    let weeks = [];
-    let done = false;
-    let date = this.state.month.clone().startOf("month").add("w" - 1).day("Sunday");
-    let count = 0;
-    let monthIndex = date.month();
-
-    const {
-      selected,
-      month,
-    } = this.state;
-
+    // whileloop;
     while (!done) {
+      // pushing every first sunday of the week;
       weeks.push(
-        <Week key={date}
-          date={date.clone()}
-          month={month}
-          select={(day) => this.select(day)}
-          selected={selected}
-          addDateToDatePicker={this.addDateToDatePicker}
+        <Week
+          // PROPS
+          key={firstSunday}
+          date={firstSunday.clone()}
+          month={this.props.month}
+          checkin={this.props.checkin}
+          checkout={this.props.checkout}
+          booked_dates={this.state.booked_dates}
+          // FUNCTIONS:
+          selectDates={this.props.selectDates}
         />
       );
-
-      date.add(1, "w");
-
-      done = count++ > 2 && monthIndex !== date.month();
-      monthIndex = date.month();
+      firstSunday.add(1, 'w');
+      done = count++ > 2 && monthIndex !== firstSunday.month();
+      monthIndex = firstSunday.month();
     }
-
     return weeks;
-  };
-
-  renderMonthLabel() {
-    const {
-      month,
-    } = this.state;
-
-    return <span className="month-label">{month.format("MMMM YYYY")}</span>;
   }
-  renderNextMonthLabel() {
-    const {
-      month,
-    } = this.state;
-    var nextMonth = this.state.month.add(1, 'month')
-    return <span className="month-label">{nextMonth.format("MMMM YYYY")}</span>;
-  }
+  getSecondWeeks() {
+    // difference between getWeeks & getSecondWeeks is the month;
+    // this.props.secondMonth
+    var firstSunday = this.state.secondMonth.clone().startOf("month").add("w" - 1).day("Sunday");
+    var weeks = [];
+    var done = false;
+    var count = 0;
+    var monthIndex = firstSunday.month();
 
+    // whileloop;
+    while (!done) {
+      // pushing every first sunday of the week;
+      weeks.push(
+        <Week
+          // PROPS:
+          key={firstSunday}
+          date={firstSunday.clone()}
+          month={this.props.month}
+          checkin={this.props.checkin}
+          checkout={this.props.checkout}
+          // STATEE:
+          booked_dates={this.state.booked_dates}
+          // FUNCTIONS:
+          selectDates={this.props.selectDates}
+        />
+      );
+      firstSunday.add(1, 'w');
+      done = count++ > 2 && monthIndex !== firstSunday.month();
+      monthIndex = firstSunday.month();
+    }
+    return weeks;
+  }
+  getAvailability() {
+    // get request to db for date available;
+    axios.get('/listing')
+      .then((response) => {
+        console.log(response.data) // [{}, {}]
+        this.setState({
+          booked_dates: response.data
+        })
+      })
+  }
+  componentDidMount() {
+    this.getAvailability();
+  }
   render() {
+
     return (
-      <ModalCalendarDiv>
-        <ModalHeaderDiv>
-          <HeaderLeftDiv>
-            <h3>total nights</h3>
-          </HeaderLeftDiv>
-          <HeaderRightDiv>
-            <DatePicker />
-          </HeaderRightDiv>
-        </ModalHeaderDiv>
-        <SectionDiv>
-          <SectionLeft>
-            <header>
-              <h2>{this.renderMonthLabel()}</h2>
-              <table>
-                <tbody>
-                  <DayNames />
-                </tbody>
-              </table>
-            </header>
-            <div>
-              <table>
-                <tbody>
-                  {this.renderWeeks()}
-                </tbody>
-              </table>
-            </div>
-          </SectionLeft>
-          <SectionRight>
-            <header>
-              <h2>{this.renderNextMonthLabel()}</h2>
-              <table>
-                <tbody>
-                  <DayNames />
-                </tbody>
-              </table>
-            </header>
-            <div>
-              <table>
-                <tbody>
-                  {this.renderWeeks()}
-                </tbody>
-              </table>
-            </div>
-          </SectionRight>
-        </SectionDiv>
-      </ModalCalendarDiv>
-    );
+      <CalendarMainDiv>
+        {/* <ButtonLeft onClick={this.props.getPreviousMonths}></ButtonLeft> */}
+        {/* <br /><br /> */}
+        <FirstMonthMainDiv>
+          <div></div>
+          <table>
+            <caption style={{ fontSize: '16px' }}>{this.firstMonthLabel()}</caption>
+            <thead><DayNames /></thead>
+            <WeeksTbody>
+              {this.getWeeks()}
+            </WeeksTbody>
+          </table>
+        </FirstMonthMainDiv>
+
+        {/* <br /><br /> */}
+        <br />
+        <SecondMonthMaindiv>
+          <table>
+            <caption>{this.secondMonthLabel()}</caption>
+            <thead><DayNames /></thead>
+            <tbody>
+              {this.getSecondWeeks()}
+            </tbody>
+          </table>
+        </SecondMonthMaindiv>
+        {/* <button onClick={this.props.getNextMonths}></button> */}
+      </CalendarMainDiv>
+    )
   }
 }
 
+export default Calendar;
