@@ -1,4 +1,3 @@
-
 const express = require('express');
 const axios = require('axios');
 const app = express();
@@ -6,41 +5,54 @@ const path = require('path')
 const PORT = 3000;
 
 app.use(express.static(path.join(__dirname, '../client/dist')));
+app.use(express.json());
 
-// port 3003 (susan gallery)
-app.all('/property/*', (req, res) => {
-  axios({
-    method: req.method,
-    url: "http://localhost:3003" + req.originalUrl,
-    headers: req.params.id,
-    data: req.data
-  }).then((response) => {
-    res.send(response.data);
-  }).catch((err) => console.log(err));
+//GALLERY
+app.get('/property/:id', (req, res) => {
+  axios.get('http://54.215.39.92:3003' + req.url)
+    .then(response => {
+      res.send(response.data);
+    })
+    .catch(console.log)
 })
-
-// port 2046 (tong calendars)
+//CALENDAR
 app.get("/listing", (req, res) => {
-  var getListingAddress = 'http://localhost:2046/listing'
+  console.log('?')
+  var getListingAddress = 'http://3.17.161.89:2046/listing'
   axios.get(`${getListingAddress}/`)
     .then(response => {
       res.send(response.data)
     })
-});
-
-// port 3001 (blanca morePalces)
-app.all("/stays/*", (req, res) => {
-  axios({
-    method: req.method,
-    url: "http://localhost:3001" + req.originalUrl,
-    headers: req.headers,
-    data: req.data
-  }).then((response) => {
-    res.send(response.data);
-  }).catch((err) => console.log(err));
-});
-
+})
+// MOREPLACES
+app.get('/stays/*', (req, res) => {
+  axios.get("http://18.204.156.27:3001" + req.originalUrl)
+    .then(response => {
+      res.send(response.data);
+    })
+    .catch((error) => {
+      res.status(500).send(error);
+    });
+})
+app.post('/stays/*', (req, res) => {
+  axios.post("http://18.204.156.27:3001" + req.originalUrl, req.body)
+    .then(response => {
+      res.send(response.data);
+    })
+    .catch((error) => {
+      res.status(500).send(error);
+    });
+})
+app.put('/stays/*', (req, res) => {
+  axios.put("http://18.204.156.27:3001" + req.originalUrl, req.body)
+    .then(response => {
+      res.send(response.data);
+    })
+    .catch((error) => {
+      res.status(500).send(error);
+    });
+})
 
 app.listen(PORT, () => {
   console.info(`Ready on port ${PORT}`);
-});
+})
