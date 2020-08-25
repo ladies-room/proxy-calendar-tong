@@ -11,8 +11,6 @@ const ENDPOINT = '172.17.0.2/16';
 const moment = extendMoment(Moment);
 const axios = require('axios')
 
-// Modal.setAppElement('#app');
-
 const AppMainDiv = styled.div`
 position: relative !important;
     min-height: 100vh !important;
@@ -39,7 +37,6 @@ max-width: 1280px !important;
     --gp-section-standard-padding: 48px !important;
     --gp-section-standard-padding-condensed: 24px !important;
 `
-
 const CalendarMainDiv = styled.div`
 position: relative !important;
     width: 58.3333% !important;
@@ -84,17 +81,17 @@ class App extends React.Component {
     super(props);
     this.state = {
       month: moment(),
-      // firstMonth: moment(),
-      // secondMonth: moment().add(1, 'month'),
       selected: moment().startOf('day'),
       dateRange: [],
       checkin: '',
       checkout: '',
-      totalPrice: 0,
       booked_dates: [],
+      totalPrice: 0,
+      // TRANSFORED TO CALENDAR:
+      // firstMonth: moment(),
+      // secondMonth: moment().add(1, 'month'),
+
     }
-    this.getPreviousMonths = this.getPreviousMonths.bind(this);
-    this.getNextMonths = this.getNextMonths.bind(this);
     this.selectDates = this.selectDates.bind(this);
     this.clearDateRange = this.clearDateRange.bind(this);
     this.showDates = this.showDates.bind(this);
@@ -102,13 +99,19 @@ class App extends React.Component {
     this.checkPrice = this.checkPrice.bind(this);
     this.getAvailability = this.getAvailability.bind(this);
     this.bookedDates = this.bookedDates.bind(this);
+    this.readme = this.readme.bind(this);
+    // TRANSFORED TO CALENDAR:
+    this.getPreviousMonths = this.getPreviousMonths.bind(this);
+    this.getNextMonths = this.getNextMonths.bind(this);
   }
+  // TRANSFORED TO CALENDAR:
   getPreviousMonths() {
     this.setState({
       firstMonth: this.state.firstMonth.subtract(1, 'month'),
       secondMonth: this.state.secondMonth.subtract(1, 'month')
     })
   }
+  // TRANSFORED TO CALENDAR:
   getNextMonths() {
     this.setState({
       firstMonth: this.state.firstMonth.add(1, 'month'),
@@ -181,7 +184,15 @@ class App extends React.Component {
   bookedDates() {
     //
   }
+  readme() {
+    console.log(`README !! `)
+    console.log(`1. last/next month btn is working, just ugly`)
+    console.log(`2. state/props is not linked acurrately in modal calendar, it's an easy fix for me, but use the calendar on the page for now..!`)
+    console.log(`3. 'clear dates' in modal calendar is not working`)
+    console.log(`4. atm, you CAN book dates that are already booked`)
+  }
   componentDidMount() {
+    this.readme();
     this.getAvailability();
   }
   render() {
@@ -201,15 +212,14 @@ class App extends React.Component {
                 checkout={this.state.checkout}
                 booked_dates={this.state.booked_dates}
                 // FUNCTIONS:
-                getPreviousMonths={this.getPreviousMonths}
-                getNextMonths={this.getNextMonths}
+                // getPreviousMonths={this.getPreviousMonths}
+                // getNextMonths={this.getNextMonths}
                 selectDates={this.selectDates}
               />
             </CalendarDiv>
             <div className='boarderbuttom'></div>
           </div>
         </CalendarMainDiv >
-        {/* FORM DIV BLOCK*/}
         <FormMainDiv >
           <FormSticky>
             <FormInnerWithPaddingDiv>
@@ -227,8 +237,6 @@ class App extends React.Component {
             </FormInnerWithPaddingDiv>
           </FormSticky>
         </FormMainDiv >
-        {/* <FancyModalButton /> */}
-
       </AppMainDiv >
     )
   }

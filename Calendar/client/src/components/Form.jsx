@@ -8,7 +8,6 @@ import Calendar from './Calendar.jsx';
 import DatePicker from './DatePicker.jsx'
 import ToggleModal from './ToggleModal.jsx';
 // Modal.setAppElement('#app');
-
 // FORM HEAD: (FIRST):
 const NightSpan = styled.span`
   color: rgb(34, 34, 34) !important;
@@ -77,7 +76,6 @@ color: rgb(34, 34, 34) !important;
     white-space: nowrap !important;
     padding-left: 4px !important;
 `
-
 // FORM BODY (MIDDLE):
 const FormBodyDiv = styled.div`
 margin-bottom: 16px !important;
@@ -179,7 +177,6 @@ position: absolute !important;
     padding: 0px !important;
     overflow: hidden !important;
 `
-
 // FORM BUTTON (LAST):
 const Label = styled.label`
 // position: relative !important;
@@ -233,7 +230,6 @@ height: 56px !important;
     overflow: hidden !important;
     box-sizing: border-box;
 `
-
 // BUTTON:
 const ButtonInput = styled.input`
 cursor: pointer !important;
@@ -262,7 +258,6 @@ cursor: pointer !important;
     border-image: initial !important;
     background: linear-gradient(to right, rgb(230, 30, 77) 0%, rgb(227, 28, 95) 50%, rgb(215, 4, 102) 100%) !important;
 `
-
 // MODAL STYLES:
 const StyledModal = styled.div`
     box-shadow: rgba(0, 0, 0, 0.2) 0px 6px 20px !important;
@@ -297,7 +292,6 @@ const DatePickerDiv = styled.div`
     min-width: 270px !important;
     display: block !important;
 `
-
 const ModalBodyDiv = styled.div`
 margin-right: 0px !important;
     margin-left: -8px !important;
@@ -305,7 +299,6 @@ margin-right: 0px !important;
     // display: flex !important;
     height: 100% !important;
 `
-
 const TotalDateDiv = styled.div`
 color: rgb(34, 34, 34) !important;
     font-family: Circular, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif !important;
